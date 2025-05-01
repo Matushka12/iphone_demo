@@ -2,76 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>iPhone Loop Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iPhone Demo Loop</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
-    body, html {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
       background: black;
-      overflow: hidden;
-    }
-    #videoContainer, #homeScreen {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-    #homeScreen {
-      background-color: black;
-      color: white;
-      font-size: 24px;
-      display: none;
-      flex-direction: column;
+      height: 100vh;
     }
     video {
-      width: 100%;
-      height: auto;
-      max-height: 100%;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
     }
   </style>
 </head>
 <body>
+  <video autoplay muted loop playsinline>
+    <source src="iphone_ad.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
-<div id="videoContainer">
- <video autoplay loop muted playsinline style="width:100vw; height:100vh; object-fit:cover;">
-  <source src="iphone_ad.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+  <script>
+    let idleTime = 0;
+    const resetTimer = () => {
+      idleTime = 0;
+    };
 
-</div>
+    // Count idle time
+    setInterval(() => {
+      idleTime++;
+      if (idleTime >= 30) {
+        window.location.reload(); // Reloads to restart video
+      }
+    }, 1000);
 
-<div id="homeScreen">
-  <p>Welcome to Zoommer!</p>
-  <p>Explore the phone features here.</p>
-</div>
-
-<script>
-  const video = document.getElementById('adVideo');
-  const videoContainer = document.getElementById('videoContainer');
-  const homeScreen = document.getElementById('homeScreen');
-  let idleTimer = null;
-
-  const resetToVideo = () => {
-    homeScreen.style.display = 'none';
-    videoContainer.style.display = 'flex';
-    video.play();
-  };
-
-  const goToHome = () => {
-    video.pause();
-    videoContainer.style.display = 'none';
-    homeScreen.style.display = 'flex';
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(resetToVideo, 30000); // 30 seconds
-  };
-
-  window.addEventListener('click', goToHome);
-</script>
-
+    // Reset timer on interaction
+    ['click', 'mousemove', 'keydown', 'touchstart'].forEach(event =>
+      document.addEventListener(event, resetTimer)
+    );
+  </script>
 </body>
 </html>
